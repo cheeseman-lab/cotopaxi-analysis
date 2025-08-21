@@ -1,0 +1,176 @@
+
+# ~BrieFlow analysis configuration file~
+
+# All paths are resolved relative to the directory the workflow is run from.
+
+# Parameters:
+all:
+  root_fp: brieflow_output/
+preprocess:
+  sbs_samples_fp: config/sbs_samples.tsv
+  sbs_combo_fp: config/sbs_combo.tsv
+  phenotype_samples_fp: config/phenotype_samples.tsv
+  phenotype_combo_fp: config/phenotype_combo.tsv
+  sbs_data_format: nd2
+  sbs_data_organization: well
+  sbs_channel_order:
+  - DAPI-CY3_30p-A594_30p-CY5_30p-CY7_30p
+  - CY3_30p
+  - A594_30p
+  - CY5_30p
+  - CY7_30p
+  sbs_channel_order_flip: false
+  sbs_metadata_samples_df_fp: null
+  phenotype_data_format: nd2
+  phenotype_data_organization: well
+  phenotype_channel_order:
+  - GFP_1x1-DAPI_1x1
+  - A594_1x1
+  - AF750_1x1
+  phenotype_channel_order_flip: true
+  phenotype_round_order:
+  - 1
+  phenotype_metadata_samples_df_fp: null
+  sample_fraction: 0.5
+sbs:
+  alignment_method: null
+  channel_names:
+  - DAPI
+  - G
+  - T
+  - A
+  - C
+  upsample_factor: 2
+  skip_cycles_indices: null
+  manual_background_cycle_index: null
+  extra_channel_indices:
+  - 0
+  max_filter_width: 3
+  spot_detection_method: standard
+  dapi_cycle: 1
+  cyto_cycle: 9
+  cyto_cycle_index: 8
+  dapi_index: 0
+  cyto_index: 4
+  helper_index: 1
+  segmentation_method: cellpose
+  gpu: true
+  reconcile: contained_in_cells
+  segment_cells: true
+  df_barcode_library_fp: config/barcode_library.tsv
+  threshold_peaks: 300
+  call_reads_method: median
+  bases:
+  - G
+  - T
+  - A
+  - C
+  q_min: 0
+  barcode_col: sgRNA
+  prefix_col: prefix
+  error_correct: false
+  sort_calls: count
+  mode: null
+  peak_width: 5
+  nuclei_diameter: 15
+  cell_diameter: 50
+  nuclei_flow_threshold: 0.4
+  nuclei_cellprob_threshold: 0
+  cell_flow_threshold: 0.4
+  cell_cellprob_threshold: 1
+  cyto_model: cpsam
+phenotype:
+  align: true
+  cell_cellprob_threshold: 1
+  cell_diameter: 180
+  cell_flow_threshold: 0.4
+  channel_names:
+  - DAPI
+  - TUBULIN
+  - GH2AX
+  - PHALLOIDIN
+  cp_method: cp_multichannel
+  cyto_index: 3
+  cyto_model: cpsam
+  dapi_index: 0
+  foci_channel: 2
+  gpu: false
+  helper_index: 1
+  mode: null
+  nuclei_cellprob_threshold: 0
+  nuclei_diameter: 60
+  nuclei_flow_threshold: 0.4
+  reconcile: contained_in_cells
+  remove_channel: null
+  riders:
+  - 3
+  segment_cells: true
+  segmentation_method: cellpose
+  source: 2
+  target: 0
+merge:
+  merge_combo_fp: config/merge_combo.tsv
+  sbs_metadata_cycle: 1
+  sbs_metadata_channel: null
+  ph_metadata_channel: null
+  initial_sites:
+  - - 1
+    - 1
+  - - 186
+    - 50
+  - - 548
+    - 150
+  - - 656
+    - 174
+  - - 887
+    - 225
+  - - 1279
+    - 331
+  det_range:
+  - 0.06
+  - 0.065
+  score: 0.1
+  threshold: 2
+aggregate:
+  metadata_cols_fp: config/cell_data_metadata_cols.tsv
+  collapse_cols:
+  - sgRNA_0
+  - gene_symbol_0
+  classifier_path: config/binary_xgb_none_model.dill
+  aggregate_combo_fp: config/aggregate_combo.tsv
+  filter_queries:
+  - mapped_single_gene == True
+  perturbation_name_col: gene_symbol_0
+  drop_cols_threshold: 0.1
+  drop_rows_threshold: 0.01
+  impute: true
+  contamination: 0.01
+  batch_cols:
+  - plate
+  - well
+  control_key: nontargeting
+  perturbation_id_col: sgRNA_0
+  variance_or_ncomp: 0.99
+  num_align_batches: 1
+  agg_method: median
+cluster:
+  min_cell_cutoffs:
+    Mitotic: 1
+    Interphase: 3
+    all: 3
+  leiden_resolutions:
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  phate_distance_metric: euclidean
+  cluster_combo_fp: config/cluster_combo.tsv
+  uniprot_data_fp: config/benchmark_clusters/uniprot_data.tsv
+  string_pair_benchmark_fp: config/benchmark_clusters/string_pair_benchmark.tsv
+  corum_group_benchmark_fp: config/benchmark_clusters/corum_group_benchmark.tsv
+  kegg_group_benchmark_fp: config/benchmark_clusters/kegg_group_benchmark.tsv
